@@ -30,6 +30,7 @@ function showtext (txt:string="A",scroll_flag:boolean=false) {
                 scrollen()
             } else {
                 show_streifen_x(n,center)
+                basic.pause(80)
             }
         }
         gesamt.show()
@@ -135,9 +136,8 @@ function init_alphabet () {
 function init () {
     gesamt = neopixel.create(DigitalPin.P0, 64, NeoPixelMode.RGB)
     gesamt.setBrightness(80)
-    gesamt.showColor(neopixel.colors(NeoPixelColors.Black))
     gesamt.clear()
-    for (let n = 0; n <= 7; n++) {
+    for (let n = 0; n <= hwy; n++) {
         zstrip[n] = gesamt.range(n * hwx, hwx)
     }
     showtext("ABCDÜÖÄöäü",false)
