@@ -1,5 +1,5 @@
 function scrollen () {
-    for (let strip = 0; strip <= 7; strip++) {
+    for (let strip = 0; strip < hwy; strip++) {
         let sh = (strip % 2) ? -1:1
         zstrip[strip].shift(sh)
     }
@@ -8,7 +8,7 @@ function show_streifen_x(bit:number=0,x_add:number=0) {
     zeichen_matrix.forEach(function (zahl, zeile) {
         if (zahl & Math.pow(2, bit)) {
             let b=bit+x_add
-            let px=(zeile % 2) ? (7-b):b
+            let px=(zeile % 2) ? (hwx-1-b):b
             zstrip[zeile].setPixelColor(px, neopixel.colors(NeoPixelColors.Green))
         }
     })
@@ -16,6 +16,7 @@ function show_streifen_x(bit:number=0,x_add:number=0) {
 }
 function showtext (txt:string="A",scroll_flag:boolean=false) {
     const center=Math.floor((hwx-zch_bit_breite)/2)
+    gesamt.clear()
     for (let bst_pos = 0; bst_pos < txt.length; bst_pos++) {
         if (!scroll_flag) {
             gesamt.clear()
@@ -36,13 +37,12 @@ function showtext (txt:string="A",scroll_flag:boolean=false) {
             basic.pause(pause_bst)
         }    
     }
-    gesamt.show()
 }
 
 
 
 input.onButtonPressed(Button.A, function () {
-    scrolltext("ABCDEFGHI")
+    showtext("ABCDEFGHI",true)
 })
 function init_alphabet () {
     // bstreihenfolge einhalten
@@ -72,7 +72,8 @@ let bst_reihe: string = ""
 const zch_bit_breite:number=5
 let pause_bst:number=2000
 let pause_scroll:number=200
-let hwx=8;
+let hwx=8
+let hwy=8
 
 let zstrip: neopixel.Strip[] = []
 let akt_streifen_pos = 0
