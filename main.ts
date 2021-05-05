@@ -4,7 +4,7 @@ function scrollen () {
         zstrip[strip].shift(sh)
     }
 }
-function show_streifen_x(bit:number=0,x_add:number=0) {
+function get_ystreifen(bit:number=0,x_add:number=0) {
     zeichen_matrix.forEach(function (zahl, zeile) {
         if (zahl & Math.pow(2, bit)) {
             let b=bit+x_add
@@ -15,7 +15,7 @@ function show_streifen_x(bit:number=0,x_add:number=0) {
     gesamt.show()
 }
 function showtext (txt:string="A",scroll_flag:boolean=false) {
-    const center=Math.floor((hwx-zch_bit_breite)/2)
+    const center=Math.floor((hwx-zch_bit_breite)/2) 
     gesamt.clear()
     for (let bst_pos = 0; bst_pos < txt.length; bst_pos++) {
         if (!scroll_flag) {
@@ -25,30 +25,37 @@ function showtext (txt:string="A",scroll_flag:boolean=false) {
         let str = zch_bit_breite;
         for (let n=str;n>=0;n--) {
             if (scroll_flag) {
-                show_streifen_x(n,-n)
+                get_ystreifen(n,-n)
                 basic.pause(pause_scroll)
                 scrollen()
             } else {
-                show_streifen_x(n,center)
+                get_ystreifen(n,center)
                 basic.pause(80)
             }
         }
-        gesamt.show()
+        
         if (!scroll_flag) {
+            gesamt.show()
             basic.pause(pause_bst)
         }    
     }
+    if (hwx>zch_bit_breite) {
+        gesamt.show()
+    }
 }
-
-
 
 input.onButtonPressed(Button.A, function () {
     showtext("1+1=2 öäü",true)
 })
+
+
+
+
+
 function init_alphabet () {
     // bstreihenfolge einhalten
-    // bst_reihe = "? ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜäöüZ0123456789!?.,*+-=≠:%abcdefghijklmnopqrstuvwxyz#$&()/@;<>[]|{}~€"; //99
-  bst_reihe = "? ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789!?+-.:=≠*abcdefghijklmnopqrstuvwxyzäöü"; //50+29
+    //           123456789 123456789 123456789 1234567895123456789 123456789 123456789 123456789 123456789 
+    bst_reihe = "? ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789!?+-.:=≠*abcdefghijklmnopqrstuvwxyzäöü"; //50+29
 
     arr_zeichen = [
         [14, 17, 1, 2, 4, 0, 4],
@@ -94,11 +101,11 @@ function init_alphabet () {
         [14, 17, 17, 15, 1, 2, 12],
             [4, 4, 4, 4, 4, 0, 4],
             [14, 17, 1, 2, 4, 0, 4],
-        [0, 4, 4, 31, 4, 4, 0],
-        [0, 0, 0, 31, 0, 0, 0],
+        [0, 4, 4, 31, 4, 4, 0], //+
+        [0, 0, 0, 31, 0, 0, 0], //-
             [0, 0, 0, 0, 12, 12, 0],
             [0,12, 12, 0, 12, 12, 0],
-        [0, 0, 31, 0, 31, 0, 0],
+        [0, 0, 30, 0, 30, 0, 0], //=
         [1, 2, 31, 4, 31, 8, 16],
             [0, 4, 21, 14, 21, 4, 0],
     [0, 0, 14, 1, 15, 17, 15],
@@ -134,23 +141,25 @@ function init_alphabet () {
 
 }
 function init () {
-    gesamt = neopixel.create(DigitalPin.P0, 64, NeoPixelMode.RGB)
-    gesamt.setBrightness(80)
+    gesamt = neopixel.create(DigitalPin.P0, hwx*hwy, NeoPixelMode.RGB)
+    gesamt.setBrightness(50)
     gesamt.clear()
     for (let n = 0; n <= hwy; n++) {
         zstrip[n] = gesamt.range(n * hwx, hwx)
     }
-    showtext("ABCDÜÖÄöäü",false)
+    //showtext("ABCDEFGÜÖÄöäü",false)
+    showtext("1+3=5",true)
 }
 
 //pins.setAudioPin(AnalogPin.P8)
 let zeichen_matrix: Array<number> = []
 let bst_reihe: string = ""
-const zch_bit_breite:number=5
+
 let pause_bst:number=2000
 let pause_scroll:number=200
-let hwx=8
-let hwy=8
+let hwx:number=8
+let hwy:number=8
+const zch_bit_breite:number=5
 
 let zstrip: neopixel.Strip[] = []
 let akt_streifen_pos = 0
